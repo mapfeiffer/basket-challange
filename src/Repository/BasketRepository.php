@@ -3,6 +3,8 @@
 namespace App\Repository;
 
 use App\Entity\Basket;
+use App\Entity\BasketItem;
+use App\Entity\Product;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -16,28 +18,41 @@ class BasketRepository extends ServiceEntityRepository
         parent::__construct($registry, Basket::class);
     }
 
-    //    /**
-    //     * @return Basket[] Returns an array of Basket objects
-    //     */
-    //    public function findByExampleField($value): array
-    //    {
-    //        return $this->createQueryBuilder('b')
-    //            ->andWhere('b.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->orderBy('b.id', 'ASC')
-    //            ->setMaxResults(10)
-    //            ->getQuery()
-    //            ->getResult()
-    //        ;
-    //    }
+    public function findAllAsArray(): array
+    {
+        $baskets = $this->findAll();
+        $basketsArray = [];
 
-    //    public function findOneBySomeField($value): ?Basket
-    //    {
-    //        return $this->createQueryBuilder('b')
-    //            ->andWhere('b.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->getQuery()
-    //            ->getOneOrNullResult()
-    //        ;
-    //    }
+        foreach ($baskets as $basket) {
+            $products = [];
+            $totalPrice = 0;
+            foreach ($basket->getBasketItems() as $basketItem) {
+                $products[] = $basketItem->getProduct();
+                $totalPrice = $totalPrice + ($basketItem->getProduct()->getPrice() * $basketItem->getQuantity());
+            }
+
+            $basketsArray[] = [
+                'id' => $basket->getId(),
+                'products' => $products,
+                'totalPrice' => $totalPrice,
+            ];
+        }
+
+        return $basketsArray;
+    }
+
+    private function getTotalPrice($basketId): int
+    {
+        $totalPrice = 0;
+
+        $entityManager = $this->getEntityManager();
+        $basketItems = $entityManager->getRepository(BasketItem::class)->findBy(['basket_id' => $basketId]);
+
+        foreach ($basketItems as $basketItem) {
+            $product = $entityManager->getRepository(Product::class)->findById($basketItem->getProductId())[0];
+            $totalPrice = $totalPrice + ($product->getPrice() * $basketItem->getQuantity());
+        }
+
+        return $totalPrice;
+    }
 }

@@ -14,7 +14,7 @@ use Symfony\Component\Routing\Attribute\Route;
 
 final class ProductController extends AbstractController
 {
-    #[Route('%app.api_prefix%/%app.api_version%/products/', name: 'app_v1_products_list', methods: ['GET'])]
+    #[Route('%app.api_prefix%/%app.api_version%/products/', name: 'api_%app.api_version%_products_list', methods: ['GET'])]
     public function list(EntityManagerInterface $entityManager): JsonResponse
     {
         return $this->json($entityManager->getRepository(Product::class)->findAllAsArray(), Response::HTTP_OK);
@@ -23,7 +23,7 @@ final class ProductController extends AbstractController
     /**
      * @throws ORMException
      */
-    #[Route('%app.api_prefix%/%app.api_version%/products/', name: 'app_v1_product_create', methods: ['PUT', 'POST'], format: 'json')]
+    #[Route('%app.api_prefix%/%app.api_version%/products/', name: 'api_%app.api_version%_product_create', methods: ['PUT', 'POST'], format: 'json')]
     public function create(EntityManagerInterface $entityManager, #[MapRequestPayload] Product $product): JsonResponse
     {
         $entityManager->persist($product);
@@ -41,7 +41,7 @@ final class ProductController extends AbstractController
         ], Response::HTTP_OK);
     }
 
-    #[Route('%app.api_prefix%/%app.api_version%/products/{id}', name: 'app_v1_product_show', methods: ['GET'])]
+    #[Route('%app.api_prefix%/%app.api_version%/products/{id}', name: 'api_%app.api_version%_product_show', methods: ['GET'])]
     public function show(Product $product): JsonResponse
     {
         return $this->json([
@@ -55,7 +55,7 @@ final class ProductController extends AbstractController
     }
 
     #[NoReturn]
-    #[Route('%app.api_prefix%/%app.api_version%/products/{id}', name: 'app_v1_product_update', methods: ['PUT'], format: 'json')]
+    #[Route('%app.api_prefix%/%app.api_version%/products/{id}', name: 'api_%app.api_version%_product_update', methods: ['PUT'], format: 'json')]
     public function update(
         EntityManagerInterface $entityManager,
         Product $product,
@@ -66,12 +66,12 @@ final class ProductController extends AbstractController
         $product->setPrice($updatedProduct->getPrice());
         $entityManager->flush();
 
-        return $this->redirectToRoute('app_v1_product_show', [
+        return $this->redirectToRoute('app_v1_product_show', [ // ToDo: change route with '%app.api_prefix%/%app.api_version%/products/{id}'
             'id' => $product->getId(),
         ]);
     }
 
-    #[Route('%app.api_prefix%/%app.api_version%/products/{id}', name: 'app_v1_product_delete', methods: ['DELETE'])]
+    #[Route('%app.api_prefix%/%app.api_version%/products/{id}', name: 'api_%app.api_version%_product_delete', methods: ['DELETE'])]
     public function delete(EntityManagerInterface $entityManager, Product $product): Response
     {
         $entityManager->remove($product);
