@@ -1,0 +1,17 @@
+{
+    "preset": "symfony",
+    "ignore": {
+        "words": [
+            "php",
+            "phpunit",
+            "phpstan",
+            "symfony"
+        ],
+        "paths": [
+            "src",
+            "tests",
+            "config",
+            "public"
+        ]
+    }
+}
