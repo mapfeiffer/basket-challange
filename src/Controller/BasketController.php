@@ -7,10 +7,12 @@ use App\Entity\BasketItem;
 use App\Entity\Product;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Exception\ORMException;
+use JetBrains\PhpStorm\NoReturn;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Attribute\MapRequestPayload;
 use Symfony\Component\Routing\Attribute\Route;
 
 final class BasketController extends AbstractController
@@ -18,7 +20,7 @@ final class BasketController extends AbstractController
     #[Route('%app.api_prefix%/%app.api_version%/baskets/', name: 'api_%app.api_version%_basket', methods: ['GET'])]
     public function index(EntityManagerInterface $entityManager): JsonResponse
     {
-        return $this->json($entityManager->getRepository(Basket::class)->findAllAsArray(), Response::HTTP_OK);
+        return $this->json($entityManager->getRepository(Basket::class)->getAllBasketsWithRelationsAsArray(), Response::HTTP_OK);
     }
 
     /**
@@ -49,5 +51,37 @@ final class BasketController extends AbstractController
             'createdAt' => $basket->getCreatedAt(),
             'updatedAt' => $basket->getUpdatedAt(),
         ], Response::HTTP_OK);
+    }
+
+    #[Route('%app.api_prefix%/%app.api_version%/baskets/{id}', name: 'api_%app.api_version%_basket_show', methods: ['GET'])]
+    public function show(EntityManagerInterface $entityManager, Basket $basket): JsonResponse
+    {
+        return $this->json($entityManager->getRepository(Basket::class)->getBasketWithRelationsAsArray($basket), Response::HTTP_OK);
+    }
+
+    #[NoReturn]
+    #[Route('%app.api_prefix%/%app.api_version%/baskets/{id}', name: 'api_%app.api_version%_basket_update', methods: ['PUT'], format: 'json')]
+    public function update(
+        EntityManagerInterface $entityManager,
+        Basket $basket,
+        #[MapRequestPayload] Product $updatedBasket,
+    ): Response {
+        $basket->setName($updatedBasket->getName());
+        $basket->setDescription($updatedBasket->getDescription());
+        $basket->setPrice($updatedBasket->getPrice());
+        $entityManager->flush();
+
+        return $this->redirectToRoute('api_%app.api_version%_basket_show', [
+            'id' => $basket->getId(),
+        ]);
+    }
+
+    #[Route('%app.api_prefix%/%app.api_version%/baskets/{id}', name: 'api_%app.api_version%_basket_delete', methods: ['DELETE'])]
+    public function delete(EntityManagerInterface $entityManager, Basket $basket): Response
+    {
+        $entityManager->remove($basket);
+        $entityManager->flush();
+
+        return $this->json([], Response::HTTP_NO_CONTENT);
     }
 }
