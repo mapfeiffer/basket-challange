@@ -33,7 +33,7 @@ class Basket
         return $this->basketItems;
     }
 
-    public function setBasketItems(?Collection $basketItems): self
+    public function setBasketItems(Collection $basketItems): self
     {
         $this->basketItems = $basketItems;
 

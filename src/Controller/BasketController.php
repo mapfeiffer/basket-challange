@@ -35,15 +35,16 @@ final class BasketController extends AbstractController
 
         $products = json_decode($request->getContent(), true);
 
-        foreach ($products['products'] as $product) {
-            $basketItem = new BasketItem();
-            $basketItem->setProduct($entityManager->getRepository(Product::class)->find($product['product_id']));
-            $basketItem->setQuantity($product['quantity']);
-            $basketItem->setBasket($basket);
-            $entityManager->persist($basketItem);
+        if (isset($products['products'])) {
+            foreach ($products['products'] as $product) {
+                $basketItem = new BasketItem();
+                $basketItem->setProduct($entityManager->getRepository(Product::class)->find($product['product_id']));
+                $basketItem->setQuantity($product['quantity']);
+                $basketItem->setBasket($basket);
+                $entityManager->persist($basketItem);
+            }
+            $entityManager->flush();
         }
-
-        $entityManager->flush();
 
         return $this->json($entityManager->getRepository(Basket::class)->getBasketWithRelationsAsArray($basket), Response::HTTP_OK);
     }
@@ -88,6 +89,34 @@ final class BasketController extends AbstractController
     public function delete(EntityManagerInterface $entityManager, Basket $basket): Response
     {
         $entityManager->remove($basket);
+        $entityManager->flush();
+
+        return $this->json([], Response::HTTP_NO_CONTENT);
+    }
+
+    #[Route('%app.api_prefix%/%app.api_version%/baskets/{id}/product/{productId}', name: 'api_%app.api_version%_basket_product_add', methods: ['PUT'])]
+    public function addProductToBasket(EntityManagerInterface $entityManager, Basket $basket, $productId, Request $request): Response
+    {
+        $jsonData = json_decode($request->getContent(), true);
+
+        $basketItem = new BasketItem();
+        $basketItem->setProduct($entityManager->getRepository(Product::class)->find($productId));
+        $basketItem->setQuantity($jsonData['quantity']);
+        $basketItem->setBasket($basket);
+        $entityManager->persist($basketItem);
+        $entityManager->flush();
+
+        return $this->json($entityManager->getRepository(Basket::class)->getBasketWithRelationsAsArray($basket), Response::HTTP_OK);
+    }
+
+    #[Route('%app.api_prefix%/%app.api_version%/baskets/{id}/product/{productId}', name: 'api_%app.api_version%_basket_product_delete', methods: ['DELETE'])]
+    public function deleteProductFromBasket(EntityManagerInterface $entityManager, Basket $basket, $productId): Response
+    {
+        $basketItem = $entityManager->getRepository(BasketItem::class)->findBy([
+            'product' => $productId,
+            'basket' => $basket->getId(),
+        ])[0];
+        $entityManager->remove($basketItem);
         $entityManager->flush();
 
         return $this->json([], Response::HTTP_NO_CONTENT);
