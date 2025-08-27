@@ -66,7 +66,7 @@ final class ProductController extends AbstractController
         $product->setPrice($updatedProduct->getPrice());
         $entityManager->flush();
 
-        return $this->redirectToRoute('api_%app.api_version%_product_show', [ // ToDo: change route with '%app.api_prefix%/%app.api_version%/products/{id}'
+        return $this->redirectToRoute('api_%app.api_version%_product_show', [
             'id' => $product->getId(),
         ]);
     }

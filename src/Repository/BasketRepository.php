@@ -3,8 +3,6 @@
 namespace App\Repository;
 
 use App\Entity\Basket;
-use App\Entity\BasketItem;
-use App\Entity\Product;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -27,7 +25,6 @@ class BasketRepository extends ServiceEntityRepository
             $products = [];
             $totalPrice = 0;
             foreach ($basket->getBasketItems() as $basketItem) {
-
                 $basketItemTotalPrice = $basketItem->getProduct()->getPrice() * $basketItem->getQuantity();
                 $products[] = [
                     'product' => $basketItem->getProduct(),
@@ -49,7 +46,6 @@ class BasketRepository extends ServiceEntityRepository
 
     public function getBasketWithRelationsAsArray(Basket $basket): array
     {
-
         $products = [];
         $totalPrice = 0;
         foreach ($basket->getBasketItems() as $basketItem) {

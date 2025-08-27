@@ -1,0 +1,10 @@
+parameters:
+    level: 0
+    paths:
+        - bin/
+        - config/
+        - public/
+        - src/
+        - tests/
+    ignoreErrors:
+            - '#Attribute class JetBrains\\PhpStorm\\NoReturn does not exist#'
