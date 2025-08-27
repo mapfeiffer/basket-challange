@@ -18,7 +18,7 @@ class BasketRepository extends ServiceEntityRepository
         parent::__construct($registry, Basket::class);
     }
 
-    public function findAllAsArray(): array
+    public function getAllBasketsWithRelationsAsArray(): array
     {
         $baskets = $this->findAll();
         $basketsArray = [];
@@ -39,6 +39,23 @@ class BasketRepository extends ServiceEntityRepository
         }
 
         return $basketsArray;
+    }
+
+    public function getBasketWithRelationsAsArray(Basket $basket): array
+    {
+
+        $products = [];
+        $totalPrice = 0;
+        foreach ($basket->getBasketItems() as $basketItem) {
+            $products[] = $basketItem->getProduct();
+            $totalPrice = $totalPrice + ($basketItem->getProduct()->getPrice() * $basketItem->getQuantity());
+        }
+
+        return [
+            'id' => $basket->getId(),
+            'products' => $products,
+            'totalPrice' => $totalPrice,
+        ];
     }
 
     private function getTotalPrice($basketId): int
