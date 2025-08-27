@@ -30,26 +30,20 @@ Before beginning with the installation, you will need the following
 - Navigate to the directory where you want to save the project
 - Use the git clone command followed by the repository URL
 
-```php
+```
 git clone git@github.com:mapfeiffer/basket-challange.git
 cd basket-challange
 ```
 
-### Copy example env file to .env ??? 
-
-```php
-cp .env.example .env 
-```
-
 ### Install composer packages
 
-```php
+```
 composer install
 ```
 
 ### Run DB setup. Includes creating products
 
-```php
+```
 composer setup-local-db
 ```
 
@@ -68,7 +62,7 @@ symfony server:start
 
 ### Run PHPUnit test
 
-```php
+```
 composer test:phpunit
 ```
 
@@ -82,24 +76,24 @@ composer analyse-and-test
 
 ### Run PHP CS Fixer
 
-```php
+```
 composer run:php-cs-fixer
 ```
 
 ### Run PHPStan
 
-```php
+```
 composer run:phpstan
 ```
 
 ### Run Parallel-lint
 
-```php
+```
 composer run:php-parallel-lint
 ```
 
 ### Run Peck
 
-```php
+```
 composer run:peck
 ```

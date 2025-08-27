@@ -5,7 +5,8 @@
             "php",
             "phpunit",
             "phpstan",
-            "symfony"
+            "symfony",
+            "readme"
         ],
         "paths": [
             "src",
