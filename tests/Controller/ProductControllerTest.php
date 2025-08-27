@@ -16,6 +16,7 @@ class ProductControllerTest extends WebTestCase
     private function getApiPath(): string
     {
         $container = static::getContainer();
+
         return $container->getParameter('app.api_prefix').'/'.
             $container->getParameter('app.api_version').'/products/';
     }
@@ -78,14 +79,14 @@ class ProductControllerTest extends WebTestCase
         $client = static::createClient();
         $client->request(
             'PUT',
-            $this->getApiPath(). '1',
+            $this->getApiPath().'1',
             [],
             [],
             ['CONTENT_TYPE' => 'application/json'],
             $jsonBody
         );
 
-        self::assertResponseRedirects($this->getApiPath(). '1');
+        self::assertResponseRedirects($this->getApiPath().'1');
     }
 
     #[Depends('testProductsUpdate')]
@@ -94,7 +95,7 @@ class ProductControllerTest extends WebTestCase
         $client = static::createClient();
         $client->request(
             'DELETE',
-            $this->getApiPath(). '1',
+            $this->getApiPath().'1',
             [],
             [],
             ['CONTENT_TYPE' => 'application/json'],
@@ -109,7 +110,7 @@ class ProductControllerTest extends WebTestCase
         $client = static::createClient();
         $client->request(
             'GET',
-            $this->getApiPath(). '1',
+            $this->getApiPath().'1',
         );
 
         self::assertResponseStatusCodeSame(404);
