@@ -27,8 +27,14 @@ class BasketRepository extends ServiceEntityRepository
             $products = [];
             $totalPrice = 0;
             foreach ($basket->getBasketItems() as $basketItem) {
-                $products[] = $basketItem->getProduct();
-                $totalPrice = $totalPrice + ($basketItem->getProduct()->getPrice() * $basketItem->getQuantity());
+
+                $basketItemTotalPrice = $basketItem->getProduct()->getPrice() * $basketItem->getQuantity();
+                $products[] = [
+                    'product' => $basketItem->getProduct(),
+                    'quantity' => $basketItem->getQuantity(),
+                    'total_price' => $basketItemTotalPrice,
+                ];
+                $totalPrice = $totalPrice + $basketItemTotalPrice;
             }
 
             $basketsArray[] = [
@@ -47,8 +53,13 @@ class BasketRepository extends ServiceEntityRepository
         $products = [];
         $totalPrice = 0;
         foreach ($basket->getBasketItems() as $basketItem) {
-            $products[] = $basketItem->getProduct();
-            $totalPrice = $totalPrice + ($basketItem->getProduct()->getPrice() * $basketItem->getQuantity());
+            $basketItemTotalPrice = $basketItem->getProduct()->getPrice() * $basketItem->getQuantity();
+            $products[] = [
+                'product' => $basketItem->getProduct(),
+                'quantity' => $basketItem->getQuantity(),
+                'total_price' => $basketItemTotalPrice,
+            ];
+            $totalPrice = $totalPrice + $basketItemTotalPrice;
         }
 
         return [
