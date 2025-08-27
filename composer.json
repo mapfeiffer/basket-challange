@@ -91,6 +91,7 @@
     "require-dev": {
         "doctrine/doctrine-fixtures-bundle": "^4.1",
         "friendsofphp/php-cs-fixer": "^3.86",
+        "liip/test-fixtures-bundle": "^3.5",
         "peckphp/peck": "^0.1.3",
         "php-parallel-lint/php-parallel-lint": "^1.4",
         "phpstan/phpstan": "^2.1",
