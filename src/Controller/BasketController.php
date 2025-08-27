@@ -12,7 +12,6 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpKernel\Attribute\MapRequestPayload;
 use Symfony\Component\Routing\Attribute\Route;
 
 final class BasketController extends AbstractController
@@ -46,11 +45,7 @@ final class BasketController extends AbstractController
 
         $entityManager->flush();
 
-        return $this->json([
-            'id' => $basket->getId(),
-            'createdAt' => $basket->getCreatedAt(),
-            'updatedAt' => $basket->getUpdatedAt(),
-        ], Response::HTTP_OK);
+        return $this->json($entityManager->getRepository(Basket::class)->getBasketWithRelationsAsArray($basket), Response::HTTP_OK);
     }
 
     #[Route('%app.api_prefix%/%app.api_version%/baskets/{id}', name: 'api_%app.api_version%_basket_show', methods: ['GET'])]
@@ -64,11 +59,24 @@ final class BasketController extends AbstractController
     public function update(
         EntityManagerInterface $entityManager,
         Basket $basket,
-        #[MapRequestPayload] Product $updatedBasket,
+        Request $request,
     ): Response {
-        $basket->setName($updatedBasket->getName());
-        $basket->setDescription($updatedBasket->getDescription());
-        $basket->setPrice($updatedBasket->getPrice());
+        // Remove all basket items from basket
+        $basketItems = $basket->getBasketItems();
+        foreach ($basketItems as $basketItem) {
+            $entityManager->remove($basketItem);
+        }
+
+        $products = json_decode($request->getContent(), true);
+
+        foreach ($products['products'] as $product) {
+            $basketItem = new BasketItem();
+            $basketItem->setProduct($entityManager->getRepository(Product::class)->find($product['product_id']));
+            $basketItem->setQuantity($product['quantity']);
+            $basketItem->setBasket($basket);
+            $entityManager->persist($basketItem);
+        }
+
         $entityManager->flush();
 
         return $this->redirectToRoute('api_%app.api_version%_basket_show', [
