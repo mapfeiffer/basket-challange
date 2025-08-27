@@ -91,12 +91,6 @@ class ProductControllerTest extends WebTestCase
     #[Depends('testProductsUpdate')]
     public function testProductsDelete(): void
     {
-        $jsonBody = json_encode([
-            'name' => 'test',
-            'description' => 'test',
-            'price' => 100,
-        ]);
-
         $client = static::createClient();
         $client->request(
             'DELETE',
@@ -104,7 +98,6 @@ class ProductControllerTest extends WebTestCase
             [],
             [],
             ['CONTENT_TYPE' => 'application/json'],
-            $jsonBody
         );
 
         self::assertResponseIsSuccessful();

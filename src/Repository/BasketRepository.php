@@ -29,7 +29,7 @@ class BasketRepository extends ServiceEntityRepository
                 $products[] = [
                     'product' => $basketItem->getProduct(),
                     'quantity' => $basketItem->getQuantity(),
-                    'total_price' => $basketItemTotalPrice,
+                    'totalProductPrice' => $basketItemTotalPrice,
                 ];
                 $totalPrice = $totalPrice + $basketItemTotalPrice;
             }
@@ -53,7 +53,7 @@ class BasketRepository extends ServiceEntityRepository
             $products[] = [
                 'product' => $basketItem->getProduct(),
                 'quantity' => $basketItem->getQuantity(),
-                'total_price' => $basketItemTotalPrice,
+                'totalProductPrice' => $basketItemTotalPrice,
             ];
             $totalPrice = $totalPrice + $basketItemTotalPrice;
         }
