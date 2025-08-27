@@ -36,15 +36,15 @@ final class BasketController extends AbstractController
 
         $products = json_decode($request->getContent(), true);
 
-        foreach ($products['pruducts'] as $product) {
+        foreach ($products['products'] as $product) {
             $basketItem = new BasketItem();
-            $basketItem->setProductId($product['product_id']);
+            $basketItem->setProduct($entityManager->getRepository(Product::class)->find($product['product_id']));
             $basketItem->setQuantity($product['quantity']);
-            $basketItem->setBasketId($basket->getId());
+            $basketItem->setBasket($basket);
             $entityManager->persist($basketItem);
         }
 
-        $entityManager->flush($basket);
+        $entityManager->flush();
 
         return $this->json([
             'id' => $basket->getId(),

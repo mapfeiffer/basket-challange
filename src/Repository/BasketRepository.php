@@ -68,19 +68,4 @@ class BasketRepository extends ServiceEntityRepository
             'totalPrice' => $totalPrice,
         ];
     }
-
-    private function getTotalPrice($basketId): int
-    {
-        $totalPrice = 0;
-
-        $entityManager = $this->getEntityManager();
-        $basketItems = $entityManager->getRepository(BasketItem::class)->findBy(['basket_id' => $basketId]);
-
-        foreach ($basketItems as $basketItem) {
-            $product = $entityManager->getRepository(Product::class)->findById($basketItem->getProductId())[0];
-            $totalPrice = $totalPrice + ($product->getPrice() * $basketItem->getQuantity());
-        }
-
-        return $totalPrice;
-    }
 }
