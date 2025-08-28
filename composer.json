@@ -1,4 +1,6 @@
 {
+    "name": "mapfeiffer/basket-challange",
+    "description": "A small RESTful API for creating products and baskets",
     "type": "project",
     "license": "proprietary",
     "minimum-stability": "stable",
