@@ -74,7 +74,7 @@
         "run:php-cs-fixer": "php-cs-fixer fix --diff",
         "run:php-parallel-lint": "parallel-lint src tests",
         "run:peck": "peck",
-        "setup-local-db": "php bin/console make:migration && php bin/console doctrine:database:create && php bin/console doctrine:migrations:migrate && php bin/console doctrine:fixtures:load",
+        "setup-local-db": "php bin/console doctrine:database:create && php bin/console doctrine:schema:create && php bin/console doctrine:fixtures:load",
         "test:phpunit": "phpunit",
         "analyse-and-test": [
             "@run:peck",
