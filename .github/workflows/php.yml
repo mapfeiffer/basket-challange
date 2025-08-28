@@ -17,6 +17,9 @@ jobs:
     steps:
     - uses: actions/checkout@v4
 
+    - name: Install aspell
+      run: apt install aspell
+
     - name: Validate composer.json and composer.lock
       run: composer validate --strict
 
@@ -36,4 +39,4 @@ jobs:
     # Docs: https://getcomposer.org/doc/articles/scripts.md
 
     - name: Run test suite
-      run:  composer analyse-and-test   
+      run:  composer analyse-and-test
