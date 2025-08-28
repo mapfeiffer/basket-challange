@@ -2,12 +2,14 @@
 
 namespace App\Entity;
 
-use App\Repository\BasketItemRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Gedmo\Timestampable\Traits\TimestampableEntity;
 
-#[ORM\Entity(repositoryClass: BasketItemRepository::class)]
+#[ORM\Entity]
 class BasketItem
 {
+    use TimestampableEntity;
+
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
