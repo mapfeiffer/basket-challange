@@ -1,6 +1,6 @@
-# 🚀 Basket challange
+# 🚀 Basket challenge
 
-A Test to create baskets with products on a RestFul API.
+A Test to create baskets with products on a RESTful-API.
 
 It´s made with Symfony 7.3. 
 

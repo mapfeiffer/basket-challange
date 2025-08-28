@@ -148,4 +148,121 @@ final class BasketControllerTest extends WebTestCase
 
         self::assertResponseStatusCodeSame(404);
     }
+
+    #[Depends('testBasketsTryToAccessDeleted')]
+    public function testBasketsCreateAndPutAndDeleteAndEditProduct(): void
+    {
+        // Create an empty basket
+        $client = static::createClient();
+        $client->request(
+            'PUT',
+            $this->getApiPath(),
+            [],
+            [],
+            ['CONTENT_TYPE' => 'application/json'],
+        );
+
+        self::assertResponseIsSuccessful();
+
+        $content = $client->getResponse()->getContent();
+        $data = json_decode($content, true);
+
+        self::assertIsArray($data);
+        // Basket has id, products and totalPrice
+        self::assertIsInt($data['id']);
+        self::assertIsArray($data['products']);
+        self::assertCount(0, $data['products']);
+        self::assertSame(0, $data['totalPrice']);
+
+        // Add product to the basket
+        $jsonBody = json_encode([
+            'products' => [
+                [
+                    'product_id' => 7,
+                    'quantity' => 2,
+                ],
+            ],
+        ]);
+
+        $client->request(
+            'PUT',
+            $this->getApiPath().$data['id'],
+            [],
+            [],
+            ['CONTENT_TYPE' => 'application/json'],
+            $jsonBody
+        );
+
+        self::assertResponseRedirects();
+        $client->followRedirect();
+
+        self::assertResponseIsSuccessful();
+        $content = $client->getResponse()->getContent();
+        $data = json_decode($content, true);
+
+        self::assertIsArray($data);
+        // Check if a basket has a product with quantity and totalPrice
+        self::assertSame(1, count($data['products']));
+        self::assertSame(7, $data['products']['0']['product']['id']);
+        self::assertSame(2, $data['products']['0']['quantity']);
+        self::assertIsInt($data['products']['0']['totalProductPrice']);
+
+        // Update quantity product from the basket
+        $jsonBody = json_encode([
+            'products' => [
+                [
+                    'product_id' => 7,
+                    'quantity' => 6,
+                ],
+            ],
+        ]);
+
+        $client->request(
+            'PUT',
+            $this->getApiPath().$data['id'],
+            [],
+            [],
+            ['CONTENT_TYPE' => 'application/json'],
+            $jsonBody
+        );
+
+        self::assertResponseRedirects();
+        $client->followRedirect();
+
+        self::assertResponseIsSuccessful();
+        $content = $client->getResponse()->getContent();
+        $data = json_decode($content, true);
+
+        self::assertIsArray($data);
+        // Check if a basket has an updated product
+        self::assertSame(1, count($data['products']));
+        self::assertSame(7, $data['products']['0']['product']['id']);
+        self::assertSame(6, $data['products']['0']['quantity']);
+        self::assertIsInt($data['products']['0']['totalProductPrice']);
+
+        // Delete product from the basket
+        $client->request(
+            'DELETE',
+            $this->getApiPath().$data['id'].'/product/7',
+        );
+
+        self::assertResponseIsSuccessful();
+
+        // Check basket if empty
+        $client->request(
+            'GET',
+            $this->getApiPath(),
+            [],
+            [],
+            ['CONTENT_TYPE' => 'application/json'],
+        );
+
+        self::assertResponseIsSuccessful();
+        $content = $client->getResponse()->getContent();
+        $data = json_decode($content, true);
+
+        self::assertIsArray($data);
+        // Check if a basket no product anymore
+        self::assertSame(0, count($data[0]['products']));
+    }
 }
