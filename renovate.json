@@ -1,0 +1,49 @@
+{
+    "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+    "extends": [
+        "config:base",
+        ":dependencyDashboard",
+        ":enableVulnerabilityAlerts",
+        ":automergePatch",
+        ":automergeDigest"
+    ],
+
+    "labels": ["dependencies", "renovate"],
+
+    "prHourlyLimit": 2,
+    "prConcurrentLimit": 10,
+
+    "packageRules": [
+        {
+            "matchManagers": ["composer"],
+            "groupName": "composer dependencies",
+            "separateMinorPatch": true,
+            "commitMessageTopic": "composer deps"
+        },
+        {
+            "matchPackagePatterns": ["^symfony/"],
+            "groupName": "symfony packages",
+            "commitMessageTopic": "symfony deps",
+            "separateMajorMinor": true
+        },
+        {
+            "matchPackagePatterns": ["phpunit/phpunit"],
+            "groupName": "phpunit",
+            "commitMessageTopic": "phpunit"
+        },
+        {
+            "matchManagers": ["composer"],
+            "matchPackagePatterns": ["doctrine/"],
+            "groupName": "doctrine deps",
+            "commitMessageTopic": "doctrine deps"
+        }
+    ],
+
+    "composer": {
+        "enabled": true
+    },
+
+    "schedule": ["before 6am on monday"],
+
+    "rangeStrategy": "bump"
+}
