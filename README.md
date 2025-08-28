@@ -57,6 +57,11 @@ symfony server:start
 
 - You can use Postman or any other REST client to test the API
 - No authentication is required
+- Use API documentation
+
+### API documentation
+
+Open the following URL in your browser https://localhost:8000/api/doc or use https://localhost:8000/api/doc.json the JSON version. 
 
 ## 🧪 Testing
 
