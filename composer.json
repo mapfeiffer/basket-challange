@@ -10,8 +10,8 @@
         "ext-ctype": "*",
         "ext-iconv": "*",
         "doctrine/dbal": "^3.10.3",
-        "doctrine/doctrine-bundle": "^2.16.2",
-        "doctrine/doctrine-migrations-bundle": "^3.4.3",
+        "doctrine/doctrine-bundle": "^2.18.0",
+        "doctrine/doctrine-migrations-bundle": "^3.5.0",
         "doctrine/orm": "^3.5.2",
         "gedmo/doctrine-extensions": "^3.20",
         "nelmio/api-doc-bundle": "^5.5",
@@ -96,7 +96,7 @@
         }
     },
     "require-dev": {
-        "doctrine/doctrine-fixtures-bundle": "^4.1.1",
+        "doctrine/doctrine-fixtures-bundle": "^4.2.0",
         "friendsofphp/php-cs-fixer": "^3.86",
         "liip/test-fixtures-bundle": "^3.5",
         "peckphp/peck": "^0.1.3",
