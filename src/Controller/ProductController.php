@@ -1,8 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Controller;
 
 use App\Entity\Product;
+use App\Repository\ProductRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Exception\ORMException;
 use JetBrains\PhpStorm\NoReturn;
@@ -17,13 +20,16 @@ final class ProductController extends AbstractController
     #[Route('%app.api_prefix%/%app.api_version%/products/', name: 'api_%app.api_version%_products_list', methods: ['GET'])]
     public function index(EntityManagerInterface $entityManager): JsonResponse
     {
-        return $this->json($entityManager->getRepository(Product::class)->findAllAsArray(), Response::HTTP_OK);
+        /** @var ProductRepository $repository */
+        $repository = $entityManager->getRepository(Product::class);
+
+        return $this->json($repository->findAllAsArray(), Response::HTTP_OK);
     }
 
     /**
      * @throws ORMException
      */
-    #[Route('%app.api_prefix%/%app.api_version%/products/', name: 'api_%app.api_version%_product_create', methods: ['PUT', 'POST'], format: 'json')]
+    #[Route('%app.api_prefix%/%app.api_version%/products/', name: 'api_%app.api_version%_product_create', methods: ['POST'], format: 'json')]
     public function create(EntityManagerInterface $entityManager, #[MapRequestPayload] Product $product): JsonResponse
     {
         $entityManager->persist($product);

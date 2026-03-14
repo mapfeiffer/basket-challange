@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
@@ -13,6 +15,7 @@ class BasketItem
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    // @phpstan-ignore property.unusedType
     private ?int $id = null;
 
     #[ORM\ManyToOne(targetEntity: Product::class, inversedBy: 'product')]

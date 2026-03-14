@@ -1,10 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Controller;
 
 use App\Entity\Basket;
 use App\Entity\BasketItem;
 use App\Entity\Product;
+use App\Repository\BasketRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Exception\ORMException;
 use JetBrains\PhpStorm\NoReturn;
@@ -19,13 +22,16 @@ final class BasketController extends AbstractController
     #[Route('%app.api_prefix%/%app.api_version%/baskets/', name: 'api_%app.api_version%_basket', methods: ['GET'])]
     public function index(EntityManagerInterface $entityManager): JsonResponse
     {
-        return $this->json($entityManager->getRepository(Basket::class)->getAllBasketsWithRelationsAsArray(), Response::HTTP_OK);
+        /** @var BasketRepository $repository */
+        $repository = $entityManager->getRepository(Basket::class);
+
+        return $this->json($repository->getAllBasketsWithRelationsAsArray(), Response::HTTP_OK);
     }
 
     /**
      * @throws ORMException
      */
-    #[Route('%app.api_prefix%/%app.api_version%/baskets/', name: 'api_%app.api_version%_basket_create', methods: ['PUT', 'POST'], format: 'json')]
+    #[Route('%app.api_prefix%/%app.api_version%/baskets/', name: 'api_%app.api_version%_basket_create', methods: ['POST'], format: 'json')]
     public function create(EntityManagerInterface $entityManager, Request $request): JsonResponse
     {
         $basket = new Basket();
@@ -46,13 +52,19 @@ final class BasketController extends AbstractController
             $entityManager->flush();
         }
 
-        return $this->json($entityManager->getRepository(Basket::class)->getBasketWithRelationsAsArray($basket), Response::HTTP_OK);
+        /** @var BasketRepository $repository */
+        $repository = $entityManager->getRepository(Basket::class);
+
+        return $this->json($repository->getBasketWithRelationsAsArray($basket), Response::HTTP_OK);
     }
 
     #[Route('%app.api_prefix%/%app.api_version%/baskets/{id}', name: 'api_%app.api_version%_basket_show', methods: ['GET'])]
     public function show(EntityManagerInterface $entityManager, Basket $basket): JsonResponse
     {
-        return $this->json($entityManager->getRepository(Basket::class)->getBasketWithRelationsAsArray($basket), Response::HTTP_OK);
+        /** @var BasketRepository $repository */
+        $repository = $entityManager->getRepository(Basket::class);
+
+        return $this->json($repository->getBasketWithRelationsAsArray($basket), Response::HTTP_OK);
     }
 
     #[NoReturn]
@@ -94,8 +106,8 @@ final class BasketController extends AbstractController
         return $this->json([], Response::HTTP_NO_CONTENT);
     }
 
-    #[Route('%app.api_prefix%/%app.api_version%/baskets/{id}/product/{productId}', name: 'api_%app.api_version%_basket_product_add', methods: ['PUT'])]
-    public function addProductToBasket(EntityManagerInterface $entityManager, Basket $basket, $productId, Request $request): Response
+    #[Route('%app.api_prefix%/%app.api_version%/baskets/{id}/product/{productId}', name: 'api_%app.api_version%_basket_product_add', methods: ['POST'])]
+    public function addProductToBasket(EntityManagerInterface $entityManager, Basket $basket, int $productId, Request $request): Response
     {
         $jsonData = json_decode($request->getContent(), true);
 
@@ -106,11 +118,14 @@ final class BasketController extends AbstractController
         $entityManager->persist($basketItem);
         $entityManager->flush();
 
-        return $this->json($entityManager->getRepository(Basket::class)->getBasketWithRelationsAsArray($basket), Response::HTTP_OK);
+        /** @var BasketRepository $repository */
+        $repository = $entityManager->getRepository(Basket::class);
+
+        return $this->json($repository->getBasketWithRelationsAsArray($basket), Response::HTTP_OK);
     }
 
     #[Route('%app.api_prefix%/%app.api_version%/baskets/{id}/product/{productId}', name: 'api_%app.api_version%_basket_product_delete', methods: ['DELETE'])]
-    public function deleteProductFromBasket(EntityManagerInterface $entityManager, Basket $basket, $productId): Response
+    public function deleteProductFromBasket(EntityManagerInterface $entityManager, Basket $basket, int $productId): Response
     {
         $basketItem = $entityManager->getRepository(BasketItem::class)->findBy([
             'product' => $productId,
