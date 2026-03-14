@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Repository;
 
 use App\Entity\Basket;
@@ -16,6 +18,9 @@ class BasketRepository extends ServiceEntityRepository
         parent::__construct($registry, Basket::class);
     }
 
+    /**
+     * @return array<int, array{id: int|null, products: array<int, array{product: \App\Entity\Product, quantity: int, totalProductPrice: int}>, totalPrice: int}>
+     */
     public function getAllBasketsWithRelationsAsArray(): array
     {
         $baskets = $this->findAll();
@@ -44,6 +49,9 @@ class BasketRepository extends ServiceEntityRepository
         return $basketsArray;
     }
 
+    /**
+     * @return array{id: int|null, products: array<int, array{product: \App\Entity\Product, quantity: int, totalProductPrice: int}>, totalPrice: int}
+     */
     public function getBasketWithRelationsAsArray(Basket $basket): array
     {
         $products = [];

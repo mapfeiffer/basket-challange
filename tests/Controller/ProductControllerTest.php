@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Tests\Controller;
 
 use App\DataFixtures\AppFixtures;
@@ -46,7 +48,7 @@ class ProductControllerTest extends WebTestCase
     }
 
     #[Depends('testProductsIndex')]
-    public function testProductsPut(): void
+    public function testProductsPost(): void
     {
         $jsonBody = json_encode([
             'name' => 'test',
@@ -56,7 +58,7 @@ class ProductControllerTest extends WebTestCase
 
         $client = static::createClient();
         $client->request(
-            'PUT',
+            'POST',
             $this->getApiPath(),
             [],
             [],
@@ -67,7 +69,7 @@ class ProductControllerTest extends WebTestCase
         self::assertResponseIsSuccessful();
     }
 
-    #[Depends('testProductsPut')]
+    #[Depends('testProductsPost')]
     public function testProductsUpdate(): void
     {
         $jsonBody = json_encode([

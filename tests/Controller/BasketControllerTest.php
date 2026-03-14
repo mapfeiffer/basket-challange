@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Tests\Controller;
 
 use App\DataFixtures\AppFixtures;
@@ -42,7 +44,7 @@ final class BasketControllerTest extends WebTestCase
     }
 
     #[Depends('testBasketsIndex')]
-    public function testBasketsPut(): void
+    public function testBasketsPost(): void
     {
         $jsonBody = json_encode([
             'products' => [
@@ -59,7 +61,7 @@ final class BasketControllerTest extends WebTestCase
 
         $client = static::createClient();
         $client->request(
-            'PUT',
+            'POST',
             $this->getApiPath(),
             [],
             [],
@@ -93,7 +95,7 @@ final class BasketControllerTest extends WebTestCase
         self::assertSame($data['totalPrice'], $totalPrice);
     }
 
-    #[Depends('testBasketsPut')]
+    #[Depends('testBasketsPost')]
     public function testBasketsUpdate(): void
     {
         $jsonBody = json_encode([
@@ -150,12 +152,12 @@ final class BasketControllerTest extends WebTestCase
     }
 
     #[Depends('testBasketsTryToAccessDeleted')]
-    public function testBasketsCreateAndPutAndDeleteAndEditProduct(): void
+    public function testBasketsCreateAndPostAndDeleteAndEditProduct(): void
     {
         // Create an empty basket
         $client = static::createClient();
         $client->request(
-            'PUT',
+            'POST',
             $this->getApiPath(),
             [],
             [],
