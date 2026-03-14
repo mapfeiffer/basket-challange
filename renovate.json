@@ -1,49 +1,58 @@
 {
     "$schema": "https://docs.renovatebot.com/renovate-schema.json",
     "extends": [
-        "config:base",
+        "config:recommended",
         ":dependencyDashboard",
         ":enableVulnerabilityAlerts",
         ":automergePatch",
         ":automergeDigest"
     ],
-
-    "labels": ["dependencies", "renovate"],
-
+    "labels": [
+        "dependencies",
+        "renovate"
+    ],
     "prHourlyLimit": 2,
     "prConcurrentLimit": 10,
-
     "packageRules": [
         {
-            "matchManagers": ["composer"],
+            "matchManagers": [
+                "composer"
+            ],
             "groupName": "composer dependencies",
             "separateMinorPatch": true,
             "commitMessageTopic": "composer deps"
         },
         {
-            "matchPackagePatterns": ["^symfony/"],
             "groupName": "symfony packages",
             "commitMessageTopic": "symfony deps",
-            "separateMajorMinor": true
+            "separateMajorMinor": true,
+            "matchPackageNames": [
+                "/^symfony//"
+            ]
         },
         {
-            "matchPackagePatterns": ["phpunit/phpunit"],
             "groupName": "phpunit",
-            "commitMessageTopic": "phpunit"
+            "commitMessageTopic": "phpunit",
+            "matchPackageNames": [
+                "/phpunit/phpunit/"
+            ]
         },
         {
-            "matchManagers": ["composer"],
-            "matchPackagePatterns": ["doctrine/"],
+            "matchManagers": [
+                "composer"
+            ],
             "groupName": "doctrine deps",
-            "commitMessageTopic": "doctrine deps"
+            "commitMessageTopic": "doctrine deps",
+            "matchPackageNames": [
+                "/doctrine//"
+            ]
         }
     ],
-
     "composer": {
         "enabled": true
     },
-
-    "schedule": ["before 6am on monday"],
-
+    "schedule": [
+        "before 6am on monday"
+    ],
     "rangeStrategy": "bump"
 }
