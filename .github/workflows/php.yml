@@ -12,7 +12,7 @@ permissions:
 jobs:
   build:
 
-    runs-on: thecodingmachine/php:8.5-v5-fpm
+    runs-on: shinsenter/php:8.5-fpm
 
     steps:
     - uses: actions/checkout@v5
